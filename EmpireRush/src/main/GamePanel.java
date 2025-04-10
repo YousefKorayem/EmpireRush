@@ -3,5 +3,7 @@ import java.awt.*;
 import javax.swing.*;
 
 public class GamePanel extends JFrame implements Runnable{
-
+	public void run() {
+		
+	}
 }
