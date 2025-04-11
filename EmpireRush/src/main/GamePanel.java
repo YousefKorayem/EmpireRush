@@ -56,6 +56,7 @@ public class GamePanel extends JPanel implements Runnable{
 		}
 		for(Camp c : map.camps) {
 			c.draw(g);
+			if(c.tower != null) c.tower.draw(g);
 		}
 	}
 	

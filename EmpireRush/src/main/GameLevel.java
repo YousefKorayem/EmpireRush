@@ -67,5 +67,8 @@ public class GameLevel extends Rectangle{
 		for(Checkpoint cp : checkpoints) {
 			System.out.println(cp.id + ": " + cp.x + ", " + cp.y);
 		}
+		
+		
+		camps.get(0).buildTower(0);
 	}
 }
