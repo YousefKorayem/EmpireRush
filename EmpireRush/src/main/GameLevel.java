@@ -14,6 +14,7 @@ import java.util.Iterator;
 public class GameLevel extends Rectangle{
 
 	int health;
+	int gold;
 	Dimension mapSize;
 	Dimension cellSize;
 	
@@ -24,11 +25,14 @@ public class GameLevel extends Rectangle{
 	ArrayList<Checkpoint> checkpoints;
 	ArrayList<Enemy> enemies;
 	
-	GameLevel(int health, String path, Dimension mapSize, Dimension cellSize){
+	GamePanel gamePanel;
+	
+	GameLevel(int health, String path, Dimension mapSize, Dimension cellSize, GamePanel gamePanel){
 		//hardcoded gamefield dimensions are here, consider changing
 		super(0,0, mapSize.width, mapSize.height);
 		this.mapSize = mapSize;
 		this.cellSize = cellSize;
+		this.gamePanel = gamePanel;
 		
 		
 		//parse level data csv
@@ -111,22 +115,27 @@ public class GameLevel extends Rectangle{
 			Enemy enemy = iterator.next();
 			if(enemy.active == false) {
 				iterator.remove();
-				System.out.println("enemy inactive");
+//				System.out.println("enemy inactive");
 			}
 			enemy.move();
 			if(!this.contains(enemy)) {
 				iterator.remove();
-				System.out.println("enemy out of bounds");
+//				System.out.println("enemy out of bounds");
 			}
 			if(enemy.active == false) {
 				iterator.remove();
-				System.out.println("enemy inactive");
+//				System.out.println("enemy inactive");
 			}
 		}
 	}
 	
 	public void takeDamage(int damage) {
 		health -= damage;
-		System.out.println("Current health:" + health);
+		gamePanel.sidePanel.repaint();
+//		System.out.println("Current health:" + health);
+	}
+	
+	public void transaction(int money) {
+		gold += money;
 	}
 }

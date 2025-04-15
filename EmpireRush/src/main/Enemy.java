@@ -6,6 +6,7 @@ public class Enemy extends Rectangle{
 	boolean active;
 	
 	int health;
+	int money;
 	int damage;
 	int speed;
 	
@@ -32,9 +33,9 @@ public class Enemy extends Rectangle{
 		
 		//are there any places to go?
 		if(pathStep >= map.checkpoints.size()) {
-			System.out.println("Nowhere to go. Deactivating.");
+//			System.out.println("Nowhere to go. Deactivating.");
 			if(map.enemyObjective.contains(this)) {
-				System.out.println("I've made it to the objective!");
+//				System.out.println("I've made it to the objective!");
 				map.takeDamage(health);
 			}
 			active = false;
@@ -55,13 +56,13 @@ public class Enemy extends Rectangle{
 		//Have I arrived at my destination
 		if(nextCheckpoint.contains(this)) {
 			//I've arrived; get me a new destination
-			System.out.println("Arrived. Is there a new destination?");
+//			System.out.println("Arrived. Is there a new destination?");
 			pathStep++;
 			//are there any more places to go?
 			if(pathStep >= map.checkpoints.size()) {
-				System.out.println("Nowhere to go. Deactivating.");
+//				System.out.println("Nowhere to go. Deactivating.");
 				if(map.enemyObjective.contains(this)) {
-					System.out.println("I've made it to the objective!");
+//					System.out.println("I've made it to the objective!");
 					map.takeDamage(health);
 				}
 				active = false;
