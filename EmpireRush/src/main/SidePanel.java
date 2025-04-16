@@ -19,6 +19,7 @@ public class SidePanel extends JPanel{
 	Image image;
 	Graphics graphics;
 	GameFrame frame;
+	String mouseSelectionText = "No Selection";
 	
 	GamePanel gamePanel;
 	
@@ -38,6 +39,10 @@ public class SidePanel extends JPanel{
 		playButton.addActionListener(e -> gamePanel.togglePause());
 		add(playButton);
 		
+		JButton laserTowerButton = new JButton("Laser Tower: 100g");
+		laserTowerButton.addActionListener(e -> gamePanel.mouseSelect("LaserTower"));
+		add(laserTowerButton);
+		
 		repaint();
 		revalidate();
 	}
@@ -52,9 +57,18 @@ public class SidePanel extends JPanel{
         g.setColor(Color.WHITE);  // Set text color
         g.setFont(new Font("Arial", Font.BOLD, 24));  // Set font (font name, style, size)
         
-        System.out.println(gamePanel.map.health);
         String healthString = "Health: " + gamePanel.map.health;
         // Draw the text at the specified coordinates
         g.drawString(healthString, 250, 100);  // Draw text at (x, y)
+        
+        String scoreString = "Score: " + gamePanel.map.score;
+        // Draw the text at the specified coordinates
+        g.drawString(scoreString, 250, 200);  // Draw text at (x, y)
+        
+        String goldString = "Gold: " + gamePanel.map.gold;
+        // Draw the text at the specified coordinates
+        g.drawString(goldString, 250, 300);  // Draw text at (x, y
+
+        g.drawString(mouseSelectionText, 250, 400);
 	}
 }

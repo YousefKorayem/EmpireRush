@@ -4,10 +4,13 @@ import javax.swing.*;
 
 public class GameFrame extends JFrame{
 	
+	MainMenuPanel mainMenuPanel;
+	
 	GameFrame(){
 		
 		//Set the current content as the main menu that was just created
-		this.add(new MainMenuPanel(this));
+		mainMenuPanel = new MainMenuPanel(this);
+		this.add(mainMenuPanel);
 		
 		//Set the title of the window
 		this.setTitle("EmpireRush");
@@ -35,6 +38,30 @@ public class GameFrame extends JFrame{
         add(sidePanel, BorderLayout.EAST);    // Side panel goes to the right side
         
         // Revalidate and repaint the frame to reflect changes
+        revalidate();
+        repaint();
+	}
+	
+	public void switchToMainMenu() {
+		getContentPane().removeAll();
+        
+        setLayout(new BorderLayout());
+        
+        add(mainMenuPanel);
+        
+        // Revalidate and repaint the frame to reflect changes
+        revalidate();
+        repaint();
+	}
+	
+	public void gameOverScreen(int score) {
+		getContentPane().removeAll();
+		
+		setLayout(new BorderLayout());
+		
+		add(new GameOverPanel(this, score));
+		
+		// Revalidate and repaint the frame to reflect changes
         revalidate();
         repaint();
 	}
