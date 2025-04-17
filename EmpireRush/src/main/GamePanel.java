@@ -32,7 +32,7 @@ public class GamePanel extends JPanel implements Runnable{
 		this.frame = frame;
 		
 		//construct the level and pass to it the path of the csv containing the level data
-		map = new GameLevel(10, 500, "level1.csv","level1script.txt", SCREEN_SIZE, new Dimension(48,48), this);
+		map = new GameLevel(10, 500, "/data/level1.csv","/data/level1script.txt", SCREEN_SIZE, new Dimension(48,48), this);
 		paused = true;
 		
 		//window and thread stuff
@@ -80,7 +80,7 @@ public class GamePanel extends JPanel implements Runnable{
 		paused = !paused;
 	}
 	
-	public void run() {
+	public void run() {System.out.println("run() started on: " + Thread.currentThread().getName());
 		//Game loop
 		long lastTime = System.nanoTime();
 		double tickNumber = 60;

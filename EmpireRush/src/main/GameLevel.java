@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -62,16 +63,16 @@ public class GameLevel extends Rectangle{
 	public void parseLevelData(String mapPath, String scriptPath) {
 
 		//parse level data csv
-				ArrayList<String[]> levelData = new ArrayList<>();
-				try (BufferedReader br = new BufferedReader(new FileReader(mapPath))) {
-			        String line;
-			        while ((line = br.readLine()) != null) {
-			            String[] row = line.split(",");
-			            levelData.add(row);
-			        }
-			    } catch (IOException e) {
-			        e.printStackTrace();
-			    }
+		ArrayList<String[]> levelData = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(mapPath)))) {
+	        String line;
+	        while ((line = br.readLine()) != null) {
+	            String[] row = line.split(",");
+	            levelData.add(row);
+	        }
+	    } catch (IOException | NullPointerException e) {
+	        e.printStackTrace();
+	    }
 				
 		//create camps and checkpoints, place them in data structures and sort checkpoints
 //		camps = new ArrayList<Camp>();
@@ -104,7 +105,7 @@ public class GameLevel extends Rectangle{
 		
 		//parse script data .txt
 		ArrayList<String[]> scriptData = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new FileReader(scriptPath))) {
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(scriptPath)))) {
 	        String line;
 	        while ((line = br.readLine()) != null) {
 	            String[] row = line.split(",");
@@ -176,7 +177,7 @@ public class GameLevel extends Rectangle{
 		
 		//here lies logic for tower attacking
 		Iterator<Tower> iterator2 = towers.iterator();
-		System.out.println(towers.size());
+//		System.out.println(towers.size());
 		while(iterator2.hasNext()){
 			Tower tower = iterator2.next();
 			tower.attack(enemies, now);
