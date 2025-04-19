@@ -1,37 +1,38 @@
 package main;
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
-import java.util.*;
 
- class MainMenuPanel extends JPanel{
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+class MainMenuPanel extends JPanel{
 		//Set here the dimensions of the menu panel
-		static final int MENU_WIDTH = 1280;
-		static final int MENU_HEIGHT = 720;
-		static final Dimension SCREEN_SIZE = new Dimension(MENU_WIDTH, MENU_HEIGHT);
+		static final int WIDTH = 1280;
+		static final int HEIGHT = 720;
+		static final Dimension SCREEN_SIZE = new Dimension(WIDTH, HEIGHT);
 		
-		GameFrame frame;
-		Graphics graphics;
-		Image image;
+		GameController game;
+		WindowController window;
 		
-		ArrayList<JButton> buttons;
+		MainMenuPanel(WindowController windowController, GameController game){
+			this.window = windowController;
+			this.game = game;
+			setFocusable(true);
+			setPreferredSize(SCREEN_SIZE);
+			populateMenu();
+		}
 		
-		MainMenuPanel(GameFrame frame){
-			//Assign the frame to this panel's attribute
-			this.frame = frame;
-			
-			setLayout(new FlowLayout(FlowLayout.CENTER));
-			this.setFocusable(true);
-			this.setPreferredSize(SCREEN_SIZE);
-			setOpaque(true);
-			setBackground(Color.black);
-			
-			//Creating title text
-			
+		public void populateMenu() {
+			JButton selectLevel = new JButton("Select Level 1");
+			selectLevel.addActionListener(e -> game.setCurrentLevel(1));
+			add(selectLevel);
 			
 			//Creating playButton
 			JButton playButton = new JButton("Play Game");
-			playButton.addActionListener(e -> frame.switchToGamePanels());
+			playButton.addActionListener(e -> game.newGame());
 			add(playButton);
 			
 			//Creating exitButton

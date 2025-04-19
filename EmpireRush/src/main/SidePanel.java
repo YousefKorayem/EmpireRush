@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -18,15 +17,14 @@ public class SidePanel extends JPanel{
 	
 	Image image;
 	Graphics graphics;
-	GameFrame frame;
 	String mouseSelectionText = "No Selection";
 	
-	GamePanel gamePanel;
+	GameController game;
 	
 //	ArrayList<Button> buttons;
 	
-	SidePanel(GamePanel gamePanel){
-		this.gamePanel = gamePanel;
+	SidePanel(GameController game, int level){
+		this.game = game;
 		
 		setLayout(new FlowLayout(FlowLayout.CENTER));
 		setFocusable(true);
@@ -36,12 +34,12 @@ public class SidePanel extends JPanel{
 		
 		//Creating startButton
 		JButton playButton = new JButton("Play");
-		playButton.addActionListener(e -> gamePanel.togglePause());
+		playButton.addActionListener(e -> game.togglePause());
 		add(playButton);
 		
-		JButton laserTowerButton = new JButton("Laser Tower: 100g");
-		laserTowerButton.addActionListener(e -> gamePanel.mouseSelect("LaserTower"));
-		add(laserTowerButton);
+//		JButton laserTowerButton = new JButton("Laser Tower: 100g");
+//		laserTowerButton.addActionListener(e -> gamePanel.mouseSelect("LaserTower"));
+//		add(laserTowerButton);
 		
 		repaint();
 		revalidate();
@@ -57,15 +55,15 @@ public class SidePanel extends JPanel{
         g.setColor(Color.WHITE);  // Set text color
         g.setFont(new Font("Arial", Font.BOLD, 24));  // Set font (font name, style, size)
         
-        String healthString = "Health: " + gamePanel.map.health;
+        String healthString = "Health: " + game.getHealth();
         // Draw the text at the specified coordinates
         g.drawString(healthString, 250, 100);  // Draw text at (x, y)
         
-        String scoreString = "Score: " + gamePanel.map.score;
+        String scoreString = "Score: " + game.getScore();
         // Draw the text at the specified coordinates
         g.drawString(scoreString, 250, 200);  // Draw text at (x, y)
         
-        String goldString = "Gold: " + gamePanel.map.gold;
+        String goldString = "Gold: " + game.getGold();
         // Draw the text at the specified coordinates
         g.drawString(goldString, 250, 300);  // Draw text at (x, y
 

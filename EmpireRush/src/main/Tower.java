@@ -9,7 +9,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
-public class Tower extends Rectangle{
+public abstract class Tower extends Rectangle{
 	Point position;
 	Color color;
 	int cooldown;

@@ -17,12 +17,9 @@ public class LaserTower extends Tower{
 
 	@Override
 	public void attack(ArrayList<Enemy> enemies, long now){
-//		System.out.println((now - lastShotTime)/100000)
-//		System.out.println("should i fire?" + (now - lastShotTime)/100000 + "; cd: " + cooldown);
 		if((now - lastShotTime)/100000 <= cooldown) return;
 		for(Enemy e : enemies) {
 			if(attackRange.intersects(e)) {
-//				System.out.println("fired shot: " + (now - lastShotTime)/100000);
 				e.takeDamage(shotDamage);
 				drawAttack = true;
 				attackTarget = new Point((int) e.getCenterX(), (int) e.getCenterY());
