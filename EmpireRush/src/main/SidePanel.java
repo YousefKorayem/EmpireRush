@@ -21,28 +21,41 @@ public class SidePanel extends JPanel{
 	
 	GameController game;
 	
-//	ArrayList<Button> buttons;
-	
-	SidePanel(GameController game, int level){
+	SidePanel(GameController game, WindowController window){
 		this.game = game;
 		
 		setLayout(new FlowLayout(FlowLayout.CENTER));
 		setFocusable(true);
 		setPreferredSize(PANEL_SIZE);
-        setOpaque(true); 
-		setBackground(Color.CYAN); // Set the background color
 		
+		populatePanel(game, window);
+		
+		repaint();
+		revalidate();
+	}
+	
+	public void populatePanel(GameController game, WindowController window) {
 		//Creating startButton
 		JButton playButton = new JButton("Play");
 		playButton.addActionListener(e -> game.togglePause());
 		add(playButton);
 		
-//		JButton laserTowerButton = new JButton("Laser Tower: 100g");
-//		laserTowerButton.addActionListener(e -> gamePanel.mouseSelect("LaserTower"));
-//		add(laserTowerButton);
+		//Creating mainMenuButton
+		JButton mainMenuButton = new JButton("Main Menu");
+		mainMenuButton.addActionListener(e -> window.toMainMenuView());
+		add(mainMenuButton);
 		
-		repaint();
-		revalidate();
+		//Creating exitButton
+		JButton quitButton = new JButton("Quit");
+		quitButton.addActionListener(e -> System.exit(0));
+		add(quitButton);
+		
+		//Create tower buttons
+		for(TowerType t: TowerType.values()) {
+			JButton button = new JButton(t.displayName);
+			button.addActionListener(e -> game.buyTower(t));
+			add(button);
+		}
 	}
 	
 	public void paint(Graphics g) {

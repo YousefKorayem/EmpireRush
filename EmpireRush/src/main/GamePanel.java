@@ -25,25 +25,86 @@ public class GamePanel extends JPanel{
 		//window and thread stuff
 		this.setFocusable(true);
 		this.setPreferredSize(SCREEN_SIZE);
+		
+		// Track mouse movement
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            	Point mousePoint = new Point(e.getX(), e.getY());
+            	if(game.getHeldTower() != null) {
+        			game.getHeldTower().positionTower(mousePoint);
+        			repaint();
+        		}
+            }
+        });
+        
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+            	
+            	Point mousePoint = new Point(e.getX(), e.getY());
+                Tower heldTower = game.getHeldTower();
+                if (heldTower != null) {
+                	for(Checkpoint cp : game.getCheckpoints()) {
+                		if(cp.contains(mousePoint)) {
+                			return;
+                		}
+                	}
+                    // Set tower's final position
+                    heldTower.placeTower(mousePoint);
+                    // Clear the held tower
+                    game.setHeldTower(null);
+                    // Redraw
+                    repaint();
+                    return; 
+                }
+                
+                for(Tower t : game.getTowers()) {
+            		if(t.contains(mousePoint)) {
+            			//we clicked on a tower. Select it!
+            			game.setSelectedTower(t);
+            			game.setHeldTower(null);
+            			repaint();
+            			return;
+            		}
+            	}
+                
+                System.out.println("clicked on nothing");
+                game.setSelectedTower(null);
+                repaint();
+            }
+        });
 	}
 	
 	public void paint(Graphics g) {
 		image = createImage(getWidth(), getHeight());
 		graphics = image.getGraphics();
 		draw(graphics);
+		
 		g.drawImage(image,  0,  0,  this);
 	}
 	
 	public void draw(Graphics g) {
-//		for(Checkpoint cp : game.getCheckpoints()) {
-//			cp.draw(g);
-//		}
+		drawBackground(g);
 		for(Tower t : game.getTowers()) {
 			t.draw(g);
-			t.drawRange(g);
 		}
+		
+		if(game.getHeldTower() != null) {
+			game.getHeldTower().simulateRange(g);
+		}
+		else if(game.getSelectedTower() != null) {
+			game.getSelectedTower().drawRange(g);
+		}
+		
 		for(Enemy e : game.getEnemies()) {
 			e.draw(g);
+		}
+	}
+	
+	public void drawBackground(Graphics g) {
+		for(Checkpoint cp : game.getCheckpoints()) {
+			cp.draw(g);
 		}
 	}
 }

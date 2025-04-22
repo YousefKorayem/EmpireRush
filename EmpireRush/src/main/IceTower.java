@@ -5,14 +5,14 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 
-public class LaserTower extends Tower{
+public class IceTower extends Tower{
 	
 	Point attackTarget;
 
-	LaserTower() {
-		super(new Point(-100,-100), 250, 20000, 3, 30, 30);
-		price = 150;
-		color = Color.red;
+	IceTower() {
+		super(new Point(-100,-100), 250, 10000, 1, 30, 30);
+		color = Color.blue;
+		price = 75;
 		// TODO Auto-generated constructor stub
 	}
 
