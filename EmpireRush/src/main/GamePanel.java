@@ -6,59 +6,72 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.*;
 import javax.swing.*;
 
-public class GamePanel extends JPanel implements Runnable{
+public class GamePanel extends JPanel{
 	//Panel dimensions information
-	static final int GAME_WIDTH = 720;
-	static final int GAME_HEIGHT = 720;
-	static final Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH, GAME_HEIGHT);
+	static final int WIDTH = 720;
+	static final int HEIGHT = 720;
+	static final Dimension SCREEN_SIZE = new Dimension(WIDTH, HEIGHT);
 
-	//reference to the game level object
-	GameLevel map;
+	GameController game;
 	
 	//Graphics and process data
 	Thread gameThread;
 	Image image;
 	Graphics graphics;
-	GameFrame frame;
-	SidePanel sidePanel;
 	
-	Boolean paused;
-	Boolean gameOver = false;
-	
-	String mouseSelection = "";
-	
-	GamePanel(GameFrame frame){
-		//set a reference to the frame holding the panel
-		this.frame = frame;
-		
-		//construct the level and pass to it the path of the csv containing the level data
-		map = new GameLevel(10, 500, "/data/level1.csv","/data/level1script.txt", SCREEN_SIZE, new Dimension(48,48), this);
-		paused = true;
+	GamePanel(GameController game, int level){
+		this.game = game;
 		
 		//window and thread stuff
 		this.setFocusable(true);
 		this.setPreferredSize(SCREEN_SIZE);
-		gameThread = new Thread(this);
-		gameThread.start();
 		
-		setOpaque(true);
-		setBackground(Color.black);
-		
-		// Mouse click listener for clicks
+		// Track mouse movement
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            	Point mousePoint = new Point(e.getX(), e.getY());
+            	if(game.getHeldTower() != null) {
+        			game.getHeldTower().positionTower(mousePoint);
+        			repaint();
+        		}
+            }
+        });
+        
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-            	if(!mouseSelection.equals("")) {
-            		//try to place a tower here
-            		switch (mouseSelection) {
-            			case "LaserTower":
-            				map.towers.add(new LaserTower(e.getPoint()));
-            				mouseSelection = "";
-            				sidePanel.mouseSelectionText = "No Selection";
-            				sidePanel.repaint();
-            				repaint();
+            public void mousePressed(MouseEvent e) {
+            	
+            	Point mousePoint = new Point(e.getX(), e.getY());
+                Tower heldTower = game.getHeldTower();
+                if (heldTower != null) {
+                	for(Checkpoint cp : game.getCheckpoints()) {
+                		if(cp.contains(mousePoint)) {
+                			return;
+                		}
+                	}
+                    // Set tower's final position
+                    heldTower.placeTower(mousePoint);
+                    // Clear the held tower
+                    game.setHeldTower(null);
+                    // Redraw
+                    repaint();
+                    return; 
+                }
+                
+                for(Tower t : game.getTowers()) {
+            		if(t.contains(mousePoint)) {
+            			//we clicked on a tower. Select it!
+            			game.setSelectedTower(t);
+            			game.setHeldTower(null);
+            			repaint();
+            			return;
             		}
             	}
+                
+                System.out.println("clicked on nothing");
+                game.setSelectedTower(null);
+                repaint();
             }
         });
 	}
@@ -66,83 +79,32 @@ public class GamePanel extends JPanel implements Runnable{
 	public void paint(Graphics g) {
 		image = createImage(getWidth(), getHeight());
 		graphics = image.getGraphics();
-		map.draw(graphics);
+		draw(graphics);
+		
 		g.drawImage(image,  0,  0,  this);
 	}
 	
-
-	public void checkCollisions() {
+	public void draw(Graphics g) {
+		drawBackground(g);
+		for(Tower t : game.getTowers()) {
+			t.draw(g);
+		}
 		
-	}
-	
-	public void togglePause() {
-		if(gameOver) return;
-		paused = !paused;
-	}
-	
-	public void run() {System.out.println("run() started on: " + Thread.currentThread().getName());
-		//Game loop
-		long lastTime = System.nanoTime();
-		double tickNumber = 60;
-		double ns = 1000000000 / tickNumber;
-		double delta = 0;
-		long lastSpawnTime = System.nanoTime();
-
-		while(true) {
-			long now = System.nanoTime();
-			delta += (now - lastTime)/ns;
-			lastTime = now;
-			if(delta >= 1) {
-				if (!paused) {
-					boolean t = spawnEnemy(now, lastSpawnTime);
-					if(t) lastSpawnTime = now;
-	                map.move(now);
-	                if(map.enemies.isEmpty() && map.enemyQueue.isEmpty()) gameOver(map.score + map.gold - (map.maxHealth - map.health));
-	                checkCollisions();
-	                repaint();
-	            }
-				delta--;
-			}
+		if(game.getHeldTower() != null) {
+			game.getHeldTower().simulateRange(g);
+		}
+		else if(game.getSelectedTower() != null) {
+			game.getSelectedTower().drawRange(g);
+		}
+		
+		for(Enemy e : game.getEnemies()) {
+			e.draw(g);
 		}
 	}
 	
-	public boolean spawnEnemy(long now, long lastSpawnTime) {
-		//enemy spawning logic here
-		if(!map.enemyQueue.isEmpty()) {
-			if((now - lastSpawnTime)/100000 > map.enemyQueue.peek().delay) {
-				Enemy e = map.enemyQueue.remove();
-				e.active = true;
-				map.enemies.add(e);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public void gameOver(int score) {
-		gameOver = true;
-		paused = true;
-		frame.gameOverScreen(score);
-	}
-
-	public void mouseSelect(String string) {
-		if(sidePanel.mouseSelectionText.equals("No Selection") || sidePanel.mouseSelectionText.equals("Too Expensive")) {
-			switch (string) {
-				case "LaserTower":
-					if(map.gold < map.laserTowerCost) sidePanel.mouseSelectionText = "Too Expensive";
-					else{
-						map.transaction(-map.laserTowerCost);
-						sidePanel.mouseSelectionText = "Selected: Laser Tower";
-						mouseSelection = "LaserTower";
-					}
-					break;
-				case "":
-					sidePanel.mouseSelectionText = "No Selection";
-					break;
-			}
-
-			sidePanel.repaint();
+	public void drawBackground(Graphics g) {
+		for(Checkpoint cp : game.getCheckpoints()) {
+			cp.draw(g);
 		}
 	}
-
 }

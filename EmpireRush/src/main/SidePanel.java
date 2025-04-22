@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -18,33 +17,45 @@ public class SidePanel extends JPanel{
 	
 	Image image;
 	Graphics graphics;
-	GameFrame frame;
 	String mouseSelectionText = "No Selection";
 	
-	GamePanel gamePanel;
+	GameController game;
 	
-//	ArrayList<Button> buttons;
-	
-	SidePanel(GamePanel gamePanel){
-		this.gamePanel = gamePanel;
+	SidePanel(GameController game, WindowController window){
+		this.game = game;
 		
 		setLayout(new FlowLayout(FlowLayout.CENTER));
 		setFocusable(true);
 		setPreferredSize(PANEL_SIZE);
-        setOpaque(true); 
-		setBackground(Color.CYAN); // Set the background color
 		
-		//Creating startButton
-		JButton playButton = new JButton("Play");
-		playButton.addActionListener(e -> gamePanel.togglePause());
-		add(playButton);
-		
-		JButton laserTowerButton = new JButton("Laser Tower: 100g");
-		laserTowerButton.addActionListener(e -> gamePanel.mouseSelect("LaserTower"));
-		add(laserTowerButton);
+		populatePanel(game, window);
 		
 		repaint();
 		revalidate();
+	}
+	
+	public void populatePanel(GameController game, WindowController window) {
+		//Creating startButton
+		JButton playButton = new JButton("Play");
+		playButton.addActionListener(e -> game.togglePause());
+		add(playButton);
+		
+		//Creating mainMenuButton
+		JButton mainMenuButton = new JButton("Main Menu");
+		mainMenuButton.addActionListener(e -> window.toMainMenuView());
+		add(mainMenuButton);
+		
+		//Creating exitButton
+		JButton quitButton = new JButton("Quit");
+		quitButton.addActionListener(e -> System.exit(0));
+		add(quitButton);
+		
+		//Create tower buttons
+		for(TowerType t: TowerType.values()) {
+			JButton button = new JButton(t.displayName);
+			button.addActionListener(e -> game.buyTower(t));
+			add(button);
+		}
 	}
 	
 	public void paint(Graphics g) {
@@ -57,15 +68,15 @@ public class SidePanel extends JPanel{
         g.setColor(Color.WHITE);  // Set text color
         g.setFont(new Font("Arial", Font.BOLD, 24));  // Set font (font name, style, size)
         
-        String healthString = "Health: " + gamePanel.map.health;
+        String healthString = "Health: " + game.getHealth();
         // Draw the text at the specified coordinates
         g.drawString(healthString, 250, 100);  // Draw text at (x, y)
         
-        String scoreString = "Score: " + gamePanel.map.score;
+        String scoreString = "Score: " + game.getScore();
         // Draw the text at the specified coordinates
         g.drawString(scoreString, 250, 200);  // Draw text at (x, y)
         
-        String goldString = "Gold: " + gamePanel.map.gold;
+        String goldString = "Gold: " + game.getGold();
         // Draw the text at the specified coordinates
         g.drawString(goldString, 250, 300);  // Draw text at (x, y
 
