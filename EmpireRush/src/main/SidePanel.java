@@ -21,6 +21,8 @@ public class SidePanel extends JPanel{
 	
 	GameController game;
 	
+	JButton pauseButton;
+	
 	SidePanel(GameController game, WindowController window){
 		this.game = game;
 		
@@ -36,9 +38,14 @@ public class SidePanel extends JPanel{
 	
 	public void populatePanel(GameController game, WindowController window) {
 		//Creating startButton
-		JButton playButton = new JButton("Play");
-		playButton.addActionListener(e -> game.togglePause());
-		add(playButton);
+		pauseButton = new JButton("Play");
+		pauseButton.addActionListener(e -> game.togglePause());
+		add(pauseButton);
+		
+		//Creating mainMenuButton
+		JButton fastForwardButton = new JButton("Toggle Fast Forward");
+		fastForwardButton.addActionListener(e -> game.toggleFF());
+		add(fastForwardButton);
 		
 		//Creating mainMenuButton
 		JButton mainMenuButton = new JButton("Main Menu");

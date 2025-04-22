@@ -8,7 +8,7 @@ import java.awt.Graphics;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-class MainMenuPanel extends JPanel{
+class LevelSelectPanel extends JPanel{
 		//Set here the dimensions of the menu panel
 		static final int WIDTH = 1280;
 		static final int HEIGHT = 720;
@@ -17,7 +17,7 @@ class MainMenuPanel extends JPanel{
 		GameController game;
 		WindowController window;
 		
-		MainMenuPanel(WindowController windowController, GameController game){
+		LevelSelectPanel(WindowController windowController, GameController game){
 			this.window = windowController;
 			this.game = game;
 			setFocusable(true);
@@ -26,15 +26,14 @@ class MainMenuPanel extends JPanel{
 		}
 		
 		public void populateMenu() {
-			JButton selectLevel = new JButton("Select Level");
-			selectLevel.addActionListener(e -> window.toLevelSelectView());
+			JButton selectLevel = new JButton("Select Level 1");
+			selectLevel.addActionListener(e -> game.setCurrentLevel(1));
 			add(selectLevel);
-
 			
-			//Creating exitButton
-			JButton quitButton = new JButton("Quit");
-			quitButton.addActionListener(e -> System.exit(0));
-			add(quitButton);
+			//Creating playButton
+			JButton playButton = new JButton("Play Game");
+			playButton.addActionListener(e -> game.newGame());
+			add(playButton);
 			
 			revalidate();
 			repaint();

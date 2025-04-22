@@ -15,6 +15,7 @@ public class Enemy extends Rectangle{
 	int damage;
 	int speed;
 	int delay;
+	double slideBias = originalSlideBias;
 	Color color = Color.green;
 	
 	Dimension size;
@@ -30,7 +31,7 @@ public class Enemy extends Rectangle{
 	public static final Point left = new Point(-1, 0);
 	public static final Point right = new Point(1, 0);
 	
-	public static double slideBias = 0.9;
+	public static double originalSlideBias = 0.9;
 	public static double slideShift = -0.005;
 	public static int goldMultiplier = 10;
 	
@@ -80,7 +81,7 @@ public class Enemy extends Rectangle{
 			if(destinationCheck()) return;
 			//get the next checkpoint
 			nextCheckpoint = game.getCheckpoints().get(pathStep);
-			slideBias = 0.9;
+			slideBias = originalSlideBias;
 			//set my new destination
 			destination = new Point(nextCheckpoint.x + nextCheckpoint.width/2, nextCheckpoint.y + nextCheckpoint.height/2);
 		}
@@ -117,7 +118,6 @@ public class Enemy extends Rectangle{
 			}
 			velocity = new Point(direction.x * speed, direction.y * speed);
 		}
-
 		
 		//Get my new position
 		x += velocity.x;

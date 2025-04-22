@@ -50,6 +50,11 @@ public class GamePanel extends JPanel{
                 			return;
                 		}
                 	}
+                	for(Tower t : game.getTowers()) {
+                		if(t.contains(mousePoint) && t.active) {
+                			return;
+                		}
+                	}
                     // Set tower's final position
                     heldTower.placeTower(mousePoint);
                     // Clear the held tower

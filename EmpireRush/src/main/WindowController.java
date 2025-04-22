@@ -14,6 +14,7 @@ public class WindowController {
 	
 	//Panels
 	private MainMenuPanel mainMenuPanel;
+	private LevelSelectPanel levelSelectPanel;
 	private GamePanel gamePanel;
 	private SidePanel sidePanel;
 	private GameOverPanel gameOverPanel;
@@ -22,12 +23,14 @@ public class WindowController {
 	//0: MainMenu
 	//1: Game
 	//2: GameOver
+	//3: Level Select
 	private int view;
 	
 	public WindowController() {
 		gameFrame = new JFrame();
 		game = new GameController(this);
 		mainMenuPanel = new MainMenuPanel(this, game);
+		levelSelectPanel = new LevelSelectPanel(this, game);
 		
 		initWindow();
 		toMainMenuView();
@@ -47,6 +50,19 @@ public class WindowController {
 		gameFrame.setLayout(new BorderLayout());
 		gameFrame.add(mainMenuPanel);
 		view = 0;
+		if(game != null) game.setRunning(false);
+		
+		gameFrame.setLocationRelativeTo(null);
+		gameFrame.pack();
+		gameFrame.revalidate();
+		gameFrame.repaint();
+	}
+	
+	public void toLevelSelectView() {
+		gameFrame.getContentPane().removeAll();
+		gameFrame.setLayout(new BorderLayout());
+		gameFrame.add(levelSelectPanel);
+		view = 3;
 		if(game != null) game.setRunning(false);
 		
 		gameFrame.setLocationRelativeTo(null);

@@ -20,6 +20,7 @@ public class GameController implements Runnable{
 	public Random random;
 	private Thread gameThread;
 	private volatile boolean running;
+	double tickNumber = 60;
 	
 	//GameStates:
 	//-1: No game running
@@ -63,6 +64,7 @@ public class GameController implements Runnable{
 	}
 	
 	public void newGame() {
+		if(currentLevel == 0) return;
 		//1. Generate the gamePanel and sidePanel
 		window.setGamePanel(new GamePanel(this, currentLevel));
 		window.setSidePanel(new SidePanel(this, window));
@@ -158,11 +160,10 @@ public class GameController implements Runnable{
 		
 		//Game Loop
 		long lastTime = System.nanoTime();
-		double tickNumber = 60;
-		double ns = 1000000000 / tickNumber;
 		double delta = 0;
 		
 		while(running) {
+			double ns = 1000000000 / tickNumber;
 			long now = System.nanoTime();
 			
 			if(gameState == 1) {
@@ -245,11 +246,13 @@ public class GameController implements Runnable{
 
 	public void togglePause() {
 		if(gameState == 0) {
+			window.getSidePanel().pauseButton.setText("Pause");
 			gameState = 1;
 			previousGameState = 0;
 			return;
 		}
 		if(gameState == 1) {
+			window.getSidePanel().pauseButton.setText("Play");
 			gameState = 0;
 			previousGameState = 1;
 			return;
@@ -287,6 +290,15 @@ public class GameController implements Runnable{
 			towers.remove(heldTower);
 			heldTower = null;
 			buyTower(towerType);
+		}
+	}
+	
+	public void toggleFF() {
+		if(tickNumber == 60) {
+			tickNumber = 120;
+		}
+		else {
+			tickNumber = 60;
 		}
 	}
 	
